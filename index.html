@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>\n    <script>
+        (function() {
+            const theme = localStorage.getItem('devforges_theme') || 'onyx';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.classList.add('js-active');
+        })();
+    </script>
+    <style>
+        html { background-color: #0a0a0f; }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Free offline-first developer utilities suite. Format JSON, encode Base64, test Regex, calculate contrast, and more — 100% private, zero server uploads.">
+    <link rel="canonical" href="https://devforges.netlify.app/">
+    <link rel="preload" href="assets/css/style.css" as="style">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0a0a0f">
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="DEVFORGES — Developer Tools. Reimagined.">
+    <meta property="og:description" content="Access formatters, encoders, regex testers, and design compliance utilities 100% locally. Zero server uploads.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://devforges.netlify.app/">
+    <meta property="og:image" content="https://devforges.netlify.app/assets/img/og-preview.png">
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <title>DEVFORGES — Developer Tools. Reimagined.</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Devforges",
+      "url": "https://devforges.netlify.app",
+      "description": "Free offline-first developer utilities suite. Format JSON, encode Base64, test Regex and more — 100% private, zero server uploads.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Any",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "featureList": "JSON Formatter, Base64 Encoder, Regex Tester, URL Encoder, Hash Generator, JWT Decoder, Diff Checker"
+    }
+    </script>
+</head>
+<body data-root-path="./">
+
+    <!-- Noise Screen Layer -->
+    <div class="noise-overlay"></div>
+
+    <!-- Background Aurora & Floating Orbs -->
+    <div class="aurora-container">
+        <div class="aurora"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <canvas class="canvas-bg" id="particle-canvas"></canvas>
+    </div>
+
+    <!-- STICKY GLASS NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>DEVFORGES</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="index.html" class="nav-link active">Home</a></li>
+                <li><a href="tools/index.html" class="nav-link">Tools</a></li>
+                <li><a href="pricing/index.html" class="nav-link">Pricing</a></li>
+                <li><a href="blog/index.html" class="nav-link">Blog</a></li>
+                <li><a href="about/index.html" class="nav-link">About</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-search-trigger" id="search-trigger" aria-label="Open command palette">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right: 4px;">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <span>Search</span>
+                    <kbd>⌘K</kbd>
+                </button>
+
+                <div class="theme-selector-wrapper">
+                    <select class="form-select" id="theme-selector" aria-label="Select theme">
+                        <option value="onyx">Midnight Onyx</option>
+                        <option value="obsidian">Obsidian Black</option>
+                        <option value="matrix">Neon Matrix</option>
+                    </select>
+                </div>
+
+                <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header class="hero fade-in">
+        <div class="hero-badge badge">
+            ⚡ 100% Client-Side Sandbox. No Data Transmission.
+        </div>
+        
+        <h1 class="hero-title">
+            <span id="typed-headline">Format JSON.</span><span class="typing-cursor"></span>
+        </h1>
+        
+        <p class="hero-subtitle">
+            A premium, installable suite of secure developer utilities. Runs entirely offline in your browser, keeping your sensitive data private.
+        </p>
+        
+        <div class="hero-ctas">
+            <a href="tools/index.html" class="btn btn-primary btn-glow">Browse 12 Utilities</a>
+            <a href="about/index.html" class="btn btn-secondary">Learn Security Architecture</a>
+        </div>
+
+
+
+        <!-- Live Formatting Teaser Mini Demo Widget -->
+        <div class="live-demo-widget">
+            <h3 style="font-size: 1rem; color: var(--text-primary); margin-bottom: 8px; font-weight:600;">⚡ Live Sandbox Formatting Teaser</h3>
+            <p style="font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 12px;">Type or paste unformatted JSON on the left to see it parse in real time.</p>
+            <div class="live-demo-grid">
+                <textarea class="live-demo-textarea" id="teaser-input" placeholder='{"user":"alice","status":"active","metrics":{"speed":"0ms","private":true}}'></textarea>
+                <div class="live-demo-output" id="teaser-output">{
+  "user": "alice",
+  "status": "active",
+  "metrics": {
+    "speed": "0ms",
+    "private": true
+  }
+}</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- STATS COUNTERS SECTION (NEW) -->
+    <section class="stats-section fade-in">
+        <div class="stats-container">
+            <div class="stat-card">
+                <h3 class="counter" data-target="12">0</h3>
+                <p>Offline Utilities</p>
+            </div>
+            <div class="stat-card">
+                <h3><span class="counter" data-target="0">0</span>ms</h3>
+                <p>Execution Latency</p>
+            </div>
+            <div class="stat-card">
+                <h3><span class="counter" data-target="100">0</span>%</h3>
+                <p>Private & Secure</p>
+            </div>
+            <div class="stat-card">
+                <h3>∞</h3>
+                <p>Free Forever</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CORE FEATURES SECTION -->
+    <section class="recent-section fade-in">
+        <div class="section-header" style="justify-content: center; margin-bottom: 40px; text-align: center; flex-direction: column; gap: 8px;">
+            <h2 class="section-title" style="font-size: 1.8rem;">Architecture Principles</h2>
+            <p style="color: var(--text-secondary); max-width: 500px; font-size: 0.9rem;">How DEVFORGES achieves ultimate clipboard security.</p>
+        </div>
+        <div class="tools-grid">
+            <div class="tool-card" style="cursor: default;">
+                <div class="tool-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+                </div>
+                <h3>100% Client-Side</h3>
+                <p>Your data never leaves your computer. All processing happens locally in your browser memory sandbox. Zero server uploads.</p>
+            </div>
+            <div class="tool-card" style="cursor: default;">
+                <div class="tool-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                </div>
+                <h3>Offline-First PWA</h3>
+                <p>Works fully offline. Install DEVFORGES as a standalone application on your desktop or mobile device for instant access.</p>
+            </div>
+            <div class="tool-card" style="cursor: default;">
+                <div class="tool-card-icon">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-4 6h-4v2h4v2h-4v2h4v2H9V7h6v2z"/></svg>
+                </div>
+                <h3>Developer UX</h3>
+                <p>Handcrafted keyboard hotkey bindings, instant clipboard coping, unified dark mode styles, and fuzzy command palette navigator.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURED INTERACTIVE TOOLS PREVIEW CARDS (NEW) -->
+    <section class="recent-section fade-in">
+        <div class="section-header" style="margin-bottom: 30px;">
+            <h2 class="section-title">
+                <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                Interactive Tool Previews
+            </h2>
+            <a href="tools/index.html" class="footer-link" style="font-weight: 500; font-size: 0.85rem;">View All Tools &rarr;</a>
+        </div>
+        <div class="tools-grid">
+            <!-- Preview JSON Formatter -->
+            <div class="tool-card" style="cursor: default;">
+                <h3 style="margin-bottom: 8px;">JSON Formatter</h3>
+                <p style="margin-bottom: 12px; font-size: 0.8rem; min-height: auto;">Minify JSON instantly below:</p>
+                <textarea class="form-input" id="json-min-input" placeholder='{"hello": "world"}' style="width: 100%; height: 60px; font-family: var(--font-mono); font-size: 0.75rem; margin-bottom: 8px; resize: none;"></textarea>
+                <div class="form-input" id="json-min-output" style="width: 100%; height: 36px; font-family: var(--font-mono); font-size: 0.75rem; background: rgba(0,0,0,0.2); overflow: auto; white-space: nowrap; margin-bottom: 16px; padding: 8px; border: 1px solid var(--border-primary); color: #22c55e;">{"hello":"world"}</div>
+                <a href="tool/json-formatter/" class="btn btn-secondary" style="width: 100%; padding: 8px;">Open Full Tool</a>
+            </div>
+
+            <!-- Preview Base64 Encoder -->
+            <div class="tool-card" style="cursor: default;">
+                <h3 style="margin-bottom: 8px;">Base64 Encoder</h3>
+                <p style="margin-bottom: 12px; font-size: 0.8rem; min-height: auto;">Live encode plain text below:</p>
+                <input type="text" class="form-input" id="b64-encode-input" placeholder="Type text..." value="Devforges" style="width: 100%; font-size: 0.75rem; margin-bottom: 8px;">
+                <div class="form-input" id="b64-encode-output" style="width: 100%; height: 36px; font-family: var(--font-mono); font-size: 0.75rem; background: rgba(0,0,0,0.2); overflow: auto; margin-bottom: 16px; padding: 8px; border: 1px solid var(--border-primary); color: #3b82f6;">RGV2Zm9yZ2Vz</div>
+                <a href="tool/base64/" class="btn btn-secondary" style="width: 100%; padding: 8px;">Open Full Tool</a>
+            </div>
+
+            <!-- Preview Word Counter -->
+            <div class="tool-card" style="cursor: default;">
+                <h3 style="margin-bottom: 8px;">Word Counter</h3>
+                <p style="margin-bottom: 12px; font-size: 0.8rem; min-height: auto;">Count typed characters live:</p>
+                <input type="text" class="form-input" id="word-count-input" placeholder="Type here..." value="Security matters." style="width: 100%; font-size: 0.75rem; margin-bottom: 8px;">
+                <div class="form-input" id="word-count-output" style="width: 100%; height: 36px; font-family: var(--font-mono); font-size: 0.75rem; background: rgba(0,0,0,0.2); margin-bottom: 16px; padding: 8px; border: 1px solid var(--border-primary); color: #ec4899; display: flex; align-items: center;">Characters: 17 | Words: 2</div>
+                <a href="tool/word-counter/" class="btn btn-secondary" style="width: 100%; padding: 8px;">Open Full Tool</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- RECENTLY USED SECTION -->
+    <section class="recent-section fade-in">
+        <div class="section-header">
+            <h2 class="section-title">
+                <svg viewBox="0 0 24 24"><path d="M13.5 2c-5.24 0-9.5 4.26-9.5 9.5 0 2.02.63 3.89 1.71 5.43L2.29 20.3a1 1 0 0 0 1.41 1.41l3.37-3.37c1.54 1.08 3.41 1.71 5.43 1.71 5.24 0 9.5-4.26 9.5-9.5S18.74 2 13.5 2zm0 17c-4.14 0-7.5-3.36-7.5-7.5S9.36 4 13.5 4s7.5 3.36 7.5 7.5-3.36 7.5-7.5 7.5z"/></svg>
+                Recently Visited
+            </h2>
+        </div>
+        <div class="recent-grid" id="recently-used-grid">
+            <div class="recent-card" style="grid-column: 1/-1; justify-content: center; color: var(--text-muted); font-size: 0.85rem;">
+                Awaiting first tool visit...
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ SECTION -->
+    <section class="faq-section fade-in">
+        <h2 class="section-title" style="justify-content: center; margin-bottom: 32px;">Frequently Asked Questions</h2>
+        
+        <div class="faq-item">
+            <button class="faq-trigger">
+                <span>Are my input strings or files secure?</span>
+                <svg class="faq-icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </button>
+            <div class="faq-content">
+                <p>Yes. 100% of the input text parsing and formatting compiles locally inside your browser memory context. We do not transmit credentials or parameters to any external server. You can inspect the browser Network tab to verify.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-trigger">
+                <span>How do I run DEVFORGES offline?</span>
+                <svg class="faq-icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </button>
+            <div class="faq-content">
+                <p>Our codebase incorporates PWA metadata rules. Simply install the site as a web app on your chrome/edge browser by clicking the app button on the URL bar, and all functions will render offline instantly.</p>
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-trigger">
+                <span>Is there a paid tier or limit?</span>
+                <svg class="faq-icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            </button>
+            <div class="faq-content">
+                <p>No. DEVFORGES is 100% free and open-source forever. There are no limits on payload parsing files or sizes other than your hardware limitations.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FUZZY SEARCH COMMAND PALETTE MODAL -->
+    <div class="modal-overlay" id="command-modal-overlay">
+        <div class="palette-container">
+            <div class="palette-search-box">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" class="palette-input" id="command-palette-input" placeholder="Type a tool command or action... (e.g. JSON)" autofocus>
+            </div>
+            <div class="palette-results" id="command-palette-results">
+                <!-- Items populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>DEVFORGES</h3>
+                <p>Premium developer utilities designed for privacy, speed, and seamless aesthetics. 100% offline-first local execution.</p>
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Subscribe to updates..." aria-label="Newsletter email" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Core Tools</h4>
+                <ul class="footer-links">
+                    <li><a href="tool/json-formatter/" class="footer-link">JSON Formatter</a></li>
+                    <li><a href="tool/base64/" class="footer-link">Base64 Encoder</a></li>
+                    <li><a href="tool/regex/" class="footer-link">Regex Tester</a></li>
+                    <li><a href="tool/url-encoder/" class="footer-link">URL Encoder</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal & Privacy</h4>
+                <ul class="footer-links">
+                    <li><a href="privacy/index.html" class="footer-link">Privacy Statement</a></li>
+                    <li><a href="terms/index.html" class="footer-link">Terms of Service</a></li>
+                    <li><a href="about/index.html" class="footer-link">Security Disclosures</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Sitemap Directory</h4>
+                <ul class="footer-links">
+                    <li><a href="index.html" class="footer-link">Home (Back to Top)</a></li>
+                    <li><a href="tools/index.html" class="footer-link">Tools Space</a></li>
+                    <li><a href="pricing/index.html" class="footer-link">Pricing Models</a></li>
+                    <li><a href="blog/index.html" class="footer-link">Developer Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <span>&copy; 2026 Devforges Studio. All rights reserved. Zero cookies tracked.</span>
+            <span>DEVFORGES — Developer Tools. Reimagined.</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="assets/js/common.js"></script>
+    <script src="assets/js/particle-bg.js"></script>
+    <script>
+        // FAQ Accordion interaction
+        document.querySelectorAll('.faq-trigger').forEach(trigger => {
+            trigger.onclick = function() {
+                const item = this.parentElement;
+                const content = item.querySelector('.faq-content');
+                const isActive = item.classList.contains('active');
+                
+                document.querySelectorAll('.faq-item').forEach(el => {
+                    el.classList.remove('active');
+                    el.querySelector('.faq-content').style.maxHeight = null;
+                });
+
+                if (!isActive) {
+                    item.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            };
+        });
+
+        // Typing Headline Effect
+        const words = ["Format JSON.", "Decode Base64.", "Test Regex.", "Pick Colors.", "Generate Lorem."];
+        let wordIndex = 0;
+        let charIndex = 0;
+        let isDeleting = false;
+        const speed = 100;
+        const delayBetweenWords = 2000;
+        const targetElement = document.getElementById("typed-headline");
+
+        function type() {
+            const currentWord = words[wordIndex];
+            if (isDeleting) {
+                targetElement.textContent = currentWord.substring(0, charIndex - 1);
+                charIndex--;
+            } else {
+                targetElement.textContent = currentWord.substring(0, charIndex + 1);
+                charIndex++;
+            }
+
+            if (!isDeleting && charIndex === currentWord.length) {
+                isDeleting = true;
+                setTimeout(type, delayBetweenWords);
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                wordIndex = (wordIndex + 1) % words.length;
+                setTimeout(type, 500);
+            } else {
+                setTimeout(type, isDeleting ? 40 : speed);
+            }
+        }
+        setTimeout(type, 1000);
+
+        // Teaser real-time JSON formatter
+        const teaserInput = document.getElementById("teaser-input");
+        const teaserOutput = document.getElementById("teaser-output");
+        if (teaserInput && teaserOutput) {
+            teaserInput.addEventListener('input', () => {
+                const val = teaserInput.value.trim();
+                if(!val) {
+                    teaserOutput.textContent = '';
+                    teaserOutput.style.color = 'var(--text-muted)';
+                    return;
+                }
+                try {
+                    const parsed = JSON.parse(val);
+                    teaserOutput.textContent = JSON.stringify(parsed, null, 2);
+                    teaserOutput.style.color = '#4ade80';
+                } catch(e) {
+                    teaserOutput.textContent = 'Invalid JSON: ' + e.message;
+                    teaserOutput.style.color = '#f87171';
+                }
+            });
+        }
+
+        // Live featured previews interaction
+        // 1. JSON formatter
+        const jsonMinInput = document.getElementById("json-min-input");
+        const jsonMinOutput = document.getElementById("json-min-output");
+        if(jsonMinInput && jsonMinOutput) {
+            jsonMinInput.addEventListener('input', () => {
+                try {
+                    const val = jsonMinInput.value.trim();
+                    if(!val) {
+                        jsonMinOutput.textContent = '';
+                        return;
+                    }
+                    const parsed = JSON.parse(val);
+                    jsonMinOutput.textContent = JSON.stringify(parsed);
+                    jsonMinOutput.style.color = '#22c55e';
+                } catch(e) {
+                    jsonMinOutput.textContent = 'Invalid JSON';
+                    jsonMinOutput.style.color = '#f87171';
+                }
+            });
+        }
+
+        // 2. Base64
+        const b64Input = document.getElementById("b64-encode-input");
+        const b64Output = document.getElementById("b64-encode-output");
+        if(b64Input && b64Output) {
+            b64Input.addEventListener('input', () => {
+                try {
+                    const encoded = btoa(b64Input.value);
+                    b64Output.textContent = encoded;
+                } catch(e) {
+                    b64Output.textContent = 'Encoding error';
+                }
+            });
+        }
+
+        // 3. Word Counter
+        const wordCountInput = document.getElementById("word-count-input");
+        const wordCountOutput = document.getElementById("word-count-output");
+        if(wordCountInput && wordCountOutput) {
+            wordCountInput.addEventListener('input', () => {
+                const text = wordCountInput.value;
+                const chars = text.length;
+                const wordsCount = text.trim() === '' ? 0 : text.trim().split(/\s+/).length;
+                wordCountOutput.textContent = `Characters: ${chars} | Words: ${wordsCount}`;
+            });
+        }
+
+        // Intersection Observer scroll animations & numbers counter
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const counterObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = entry.target;
+                    const countTo = parseInt(target.getAttribute('data-target'), 10);
+                    let current = 0;
+                    const duration = 1500;
+                    const stepTime = Math.abs(Math.floor(duration / countTo));
+                    
+                    if (countTo === 0) {
+                        target.textContent = "0";
+                    } else {
+                        const timer = setInterval(() => {
+                            current += 1;
+                            target.textContent = current;
+                            if (current >= countTo) {
+                                target.textContent = countTo;
+                                clearInterval(timer);
+                            }
+                        }, stepTime);
+                    }
+                    observer.unobserve(target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.counter').forEach(c => counterObserver.observe(c));
+
+        // Fade in elements observer
+        const fadeObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+    </script>
+</body>
+</html>

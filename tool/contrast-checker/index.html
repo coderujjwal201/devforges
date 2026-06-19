@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>\n    <script>
+        (function() {
+            const theme = localStorage.getItem('devforges_theme') || 'onyx';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.classList.add('js-active');
+        })();
+    </script>
+    <style>
+        html { background-color: #0a0a0f; }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Evaluate color contrast ratios against WCAG 2.1 accessibility specifications instantly client-side. Check compliance levels (AA/AAA) with live typography previewing.">
+    <link rel="canonical" href="https://devforges.netlify.app/tool/contrast-checker/">
+    <link rel="preload" href="../../assets/css/style.css" as="style">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="manifest" href="../../manifest.json">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="WCAG Color Contrast Checker | DEVFORGES">
+    <meta property="og:description" content="Validate foreground and background color combinations against web standards. Live previews and ratio parameters.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://devforges.netlify.app/tool/contrast-checker/">
+    <meta property="og:image" content="https://devforges.netlify.app/assets/img/og-preview.png">
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <title>WCAG Color Contrast Checker | DEVFORGES</title>
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://devforges.netlify.app/"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Tools",
+        "item": "https://devforges.netlify.app/tools/"
+      },{
+        "@type": "ListItem",
+        "position": 3,
+        "name": "Contrast Checker",
+        "item": "https://devforges.netlify.app/tool/contrast-checker/"
+      }]
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [{
+        "@type": "Question",
+        "name": "What is the WCAG 2.1 contrast requirement?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "For Level AA compliance, the contrast ratio must be 4.5:1 for normal text and 3:1 for large text. For Level AAA, it requires 7:1 for normal text and 4.5:1 for large text."
+        }
+      },{
+        "@type": "Question",
+        "name": "How is relative luminance calculated?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Luminance is calculated using the relative brightness of any point in a colorspace. Color channels (RGB) are transformed to a linear scale, then weighted (0.2126R + 0.7152G + 0.0722B) to approximate human visual sensitivity."
+        }
+      },{
+        "@type": "Question",
+        "name": "Are contrast audits handled locally?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. Contrast calculations run entirely offline using vanilla JavaScript mathematical operations inside your local sandbox. No data or color codes are sent to servers."
+        }
+      }]
+    }
+    </script>
+</head>
+<body data-root-path="../../" data-tool-id="contrast-checker">
+
+    <!-- Noise Screen Layer -->
+    <div class="noise-overlay"></div>
+
+    <!-- Background Aurora & Floating Orbs -->
+    <div class="aurora-container">
+        <div class="aurora"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- STICKY GLASS NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../../index.html" class="nav-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>DEVFORGES</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="../../index.html" class="nav-link">Home</a></li>
+                <li><a href="../../tools/index.html" class="nav-link active">Tools</a></li>
+                <li><a href="../../pricing/index.html" class="nav-link">Pricing</a></li>
+                <li><a href="../../blog/index.html" class="nav-link">Blog</a></li>
+                <li><a href="../../about/index.html" class="nav-link">About</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-search-trigger" id="search-trigger" aria-label="Open command palette">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right: 4px;">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <span>Search</span>
+                    <kbd>⌘K</kbd>
+                </button>
+
+                <div class="theme-selector-wrapper">
+                    <select class="form-select" id="theme-selector" aria-label="Select theme">
+                        <option value="onyx">Midnight Onyx</option>
+                        <option value="obsidian">Obsidian Black</option>
+                        <option value="matrix">Neon Matrix</option>
+                    </select>
+                </div>
+
+                <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT SHOWCASE SPACE -->
+    <main class="hero fade-in" style="padding-top: 90px; text-align: left; align-items: stretch; max-width: 1300px;">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../../index.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="../../tools/index.html">Tools</a></li>
+            <li class="breadcrumb-item">Contrast Checker</li>
+        </ul>
+
+        <div class="hero-badge badge" style="width: fit-content; align-self: flex-start; margin-bottom: 16px;">
+            Design Utilities / Contrast Checker
+        </div>
+        
+        <div class="hero-dashboard-preview" style="transform: none; opacity: 1; margin-bottom: 40px;">
+            <div class="hero-preview-bar">
+                <div class="window-dots">
+                    <div class="window-dot"></div>
+                    <div class="window-dot"></div>
+                    <div class="window-dot"></div>
+                </div>
+                <div class="window-title">devforges://tool/contrast-checker</div>
+                <span class="badge" id="compliance-status" style="background: var(--border-primary); color: var(--text-secondary);">Idle</span>
+            </div>
+
+            <div class="hero-preview-content">
+                <!-- Sidebar lists -->
+                <aside class="hero-preview-sidebar">
+                    <div class="sidebar-category-header">Formatters</div>
+                    <a href="../json-formatter/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M5 3h14c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm0 16h14V5H5v14zm2-12h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
+                        <span>JSON Formatter</span>
+                    </a>
+                    <a href="../jwt-decoder/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        <span>JWT Decoder</span>
+                    </a>
+                    
+                    <div class="sidebar-category-header">Encoders</div>
+                    <a href="../base64/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62C8.77 11.22 10.54 10.5 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+                        <span>Base64 Converter</span>
+                    </a>
+                    <a href="../url-encoder/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                        <span>URL Encoder</span>
+                    </a>
+                    <a href="../hash-generator/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M12.85 4.51l6.43 6.43c.78.78.78 2.05 0 2.83l-6.43 6.43c-.78.78-2.05.78-2.83 0l-6.43-6.43c-.78-.78-.78-2.05 0-2.83l6.43-6.43c.78-.78 2.05-.78 2.83 0z"/></svg>
+                        <span>Hash Generator</span>
+                    </a>
+                    <a href="../timestamp/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+                        <span>Timestamp Converter</span>
+                    </a>
+
+                    <div class="sidebar-category-header">Text</div>
+                    <a href="../regex/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        <span>Regex Tester</span>
+                    </a>
+                    <a href="../word-counter/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h9v-2H3v2zm16-4h2v-2h-2v2zm0-4h2V7h-2v2zm0 8h2v-2h-2v2z"/></svg>
+                        <span>Word Counter</span>
+                    </a>
+                    <a href="../lorem/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M14 17H4v2h10v-2zm6-8H4v2h16V9zm0 4H4v2h16v-2zM4 5v2h16V5H4z"/></svg>
+                        <span>Lorem Generator</span>
+                    </a>
+                    <a href="../diff-checker/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>
+                        <span>Diff Checker</span>
+                    </a>
+
+                    <div class="sidebar-category-header">Design</div>
+                    <a href="../color-picker/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9c0 4.97 4.02 9 9 9 1 0 1.8-.8 1.8-1.8 0-.47-.18-.92-.5-1.28a.38.38 0 0 1-.08-.26c0-.22.18-.4.4-.4h1.78c4.97 0 9-4.03 9-9 0-4.97-4.03-9-9-9zm-5 9c-.83 0-1.5-.67-1.5-1.5S6.17 9 7 9s1.5.67 1.5 1.5S7.83 12 7 12zm3-4c-.83 0-1.5-.67-1.5-1.5S9.17 5 10 5s1.5.67 1.5 1.5S10.83 8 10 8zm4 0c-.83 0-1.5-.67-1.5-1.5S13.17 5 14 5s1.5.67 1.5 1.5S14.83 8 14 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.17 9 17 9s1.5.67 1.5 1.5S17.83 12 17 12z"/></svg>
+                        <span>Color Picker</span>
+                    </a>
+                    <a href="../contrast-checker/" class="sidebar-item active">
+                        <svg viewBox="0 0 24 24"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm1-17.93c3.95.49 7 3.85 7 7.93s-3.05 7.44-7 7.93V4.07z"/></svg>
+                        <span>Contrast Checker</span>
+                    </a>
+                </aside>
+
+                <!-- Work Area -->
+                <main class="hero-preview-workarea" style="display:flex; flex-direction:column; gap:0; padding:0; overflow:auto;">
+                    
+                    <div class="workspace-header" style="padding:16px 24px;">
+                        <div class="workspace-title">WCAG Color Auditor</div>
+                        <div class="workspace-actions">
+                            <button class="workspace-btn" id="btn-invert" title="Swap text and background colors">
+                                <svg viewBox="0 0 24 24" width="16" height="16"><path d="M19 14l-4 4v-3H9c-2.21 0-4-1.79-4-4v-1h2v1c0 1.1.9 2 2 2h6v-3l4 4zm-14-4l4-4v3h6c2.21 0 4 1.79 4 4v1h-2v-1c0-1.1-.9-2-2-2H9v3L5 10z"/></svg>
+                                <span>Invert Colors</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Split interface -->
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); border-top:1px solid var(--border-primary); flex:1;">
+                        
+                        <!-- Left pane: inputs & ratios -->
+                        <div style="padding:24px; border-right:1px solid var(--border-primary); display:flex; flex-direction:column; gap:20px; background:rgba(0,0,0,0.1);">
+                            
+                            <!-- Foreground Input -->
+                            <div class="form-group">
+                                <label class="form-label" style="font-weight:600; color:var(--text-secondary);">Text / Foreground Color</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input type="color" id="color-fg-picker" value="#6366f1" style="width:40px; height:38px; border:1px solid var(--border-primary); background:none; cursor:pointer; border-radius:4px; padding:2px;">
+                                    <input type="text" class="form-input" id="color-fg-hex" value="#6366f1" placeholder="#HEX..." style="font-family:var(--font-mono); font-size:0.85rem; flex:1;">
+                                </div>
+                            </div>
+
+                            <!-- Background Input -->
+                            <div class="form-group">
+                                <label class="form-label" style="font-weight:600; color:var(--text-secondary);">Background Color</label>
+                                <div style="display:flex; gap:8px;">
+                                    <input type="color" id="color-bg-picker" value="#050508" style="width:40px; height:38px; border:1px solid var(--border-primary); background:none; cursor:pointer; border-radius:4px; padding:2px;">
+                                    <input type="text" class="form-input" id="color-bg-hex" value="#050508" placeholder="#HEX..." style="font-family:var(--font-mono); font-size:0.85rem; flex:1;">
+                                </div>
+                            </div>
+
+                            <!-- Contrast Ratio Metrics Panel -->
+                            <div style="background:rgba(255,255,255,0.02); border:1px solid var(--border-primary); border-radius:8px; padding:16px; display:flex; flex-direction:column; align-items:center; gap:8px;">
+                                <div style="font-size:0.75rem; text-transform:uppercase; color:var(--text-muted); font-weight:600; letter-spacing:0.05em;">Calculated Contrast Ratio</div>
+                                <div id="ratio-display" style="font-size:2.8rem; font-family:var(--font-heading); font-weight:800; color:var(--accent-bright); line-height:1;">7.13:1</div>
+                                <div id="ratio-evaluation-badge" class="badge" style="background:rgba(16, 185, 129, 0.15); color:var(--success-color); border-color:var(--success-color);">PASS AAA</div>
+                            </div>
+
+                            <!-- Preset Quick Swatches -->
+                            <div>
+                                <label style="font-size:0.75rem; font-weight:600; color:var(--text-muted); display:block; margin-bottom:8px; text-transform:uppercase;">Preset Combos</label>
+                                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                                    <button class="workspace-btn swatch-btn" data-fg="#ffffff" data-bg="#000000" style="padding:4px 8px; font-size:0.75rem;">White/Black</button>
+                                    <button class="workspace-btn swatch-btn" data-fg="#00ff66" data-bg="#030805" style="padding:4px 8px; font-size:0.75rem;">Matrix Green</button>
+                                    <button class="workspace-btn swatch-btn" data-fg="#a1a1aa" data-bg="#18181b" style="padding:4px 8px; font-size:0.75rem;">Zinc/Gray</button>
+                                    <button class="workspace-btn swatch-btn" data-fg="#ff5555" data-bg="#120202" style="padding:4px 8px; font-size:0.75rem;">Red Danger</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right pane: Results & live previews -->
+                        <div style="padding:24px; display:flex; flex-direction:column; gap:20px;">
+                            
+                            <!-- WCAG Audits Table -->
+                            <div>
+                                <h4 style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase; margin-bottom:12px;">WCAG 2.1 Audit Results</h4>
+                                <div style="display:flex; flex-direction:column; gap:8px;">
+                                    <!-- Normal AA -->
+                                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:6px; border:1px solid var(--border-primary); background:rgba(0,0,0,0.15);">
+                                        <div>
+                                            <div style="font-size:0.8rem; font-weight:600;">Normal Text (AA)</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">Minimum ratio 4.5:1 required</div>
+                                        </div>
+                                        <span id="badge-normal-aa" class="badge">Pass</span>
+                                    </div>
+                                    <!-- Large AA -->
+                                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:6px; border:1px solid var(--border-primary); background:rgba(0,0,0,0.15);">
+                                        <div>
+                                            <div style="font-size:0.8rem; font-weight:600;">Large Text (AA)</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">Minimum ratio 3.0:1 required</div>
+                                        </div>
+                                        <span id="badge-large-aa" class="badge">Pass</span>
+                                    </div>
+                                    <!-- Normal AAA -->
+                                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:6px; border:1px solid var(--border-primary); background:rgba(0,0,0,0.15);">
+                                        <div>
+                                            <div style="font-size:0.8rem; font-weight:600;">Normal Text (AAA)</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">Minimum ratio 7.0:1 required</div>
+                                        </div>
+                                        <span id="badge-normal-aaa" class="badge">Pass</span>
+                                    </div>
+                                    <!-- Large AAA -->
+                                    <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 12px; border-radius:6px; border:1px solid var(--border-primary); background:rgba(0,0,0,0.15);">
+                                        <div>
+                                            <div style="font-size:0.8rem; font-weight:600;">Large Text (AAA)</div>
+                                            <div style="font-size:0.7rem; color:var(--text-muted);">Minimum ratio 4.5:1 required</div>
+                                        </div>
+                                        <span id="badge-large-aaa" class="badge">Pass</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Live preview card -->
+                            <div>
+                                <h4 style="font-size:0.85rem; color:var(--text-secondary); text-transform:uppercase; margin-bottom:12px;">Live Typography preview</h4>
+                                <div id="preview-box" style="border:1px solid var(--border-primary); border-radius:8px; padding:20px; transition:all 0.2s;">
+                                    <div style="font-size: 1.25rem; font-weight: 700; margin-bottom:8px;" id="preview-large-text">Large text heading (18pt Bold)</div>
+                                    <p style="font-size: 0.85rem; line-height: 1.5; margin-bottom:0;" id="preview-normal-text">This is normal body copy (14pt Regular). Readability is determined by comparing relative luminance outputs of background and foreground colors client-side.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- DOCUMENTATION SECTION -->
+        <section class="doc-section">
+            <article class="doc-content">
+                <h2>WCAG Color Contrast Checker</h2>
+                <p>
+                    Ensure your UI interfaces meet international web accessibility criteria (W3C WCAG 2.1 specifications). Check foreground and background parameters locally to pass audit scans.
+                </p>
+
+                <h3>Compliance standards</h3>
+                <ul>
+                    <li><strong>Level AA</strong> is the base standard for web projects. It requires contrast metrics above <strong>4.5:1</strong> for body text, and <strong>3:1</strong> for headlines.</li>
+                    <li><strong>Level AAA</strong> represents the highest level of web readability. It requires contrast ratios above <strong>7:1</strong> for body content, and <strong>4.5:1</strong> for title elements.</li>
+                </ul>
+
+                <h3>Frequently Asked Questions</h3>
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>Why is color contrast important for development?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    </button>
+                    <div class="faq-content">
+                        <p>Contrast enables visually impaired users, people with color blindness, or users operating under bright sunlight to read and interact with web layouts comfortably.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>How is relative luminance calculated in contrast ratios?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    </button>
+                    <div class="faq-content">
+                        <p>Colors are parsed to extract relative red, green, and blue components. These values are mapped using luminance weighting offsets, allowing the system to divide the lighter value by the darker value, outputting ratios between 1:1 and 21:1.</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+
+        <!-- Related tools in footer of page -->
+        <section style="border-top:1px solid var(--border-primary); padding-top:32px; margin-bottom:40px;">
+            <h3 style="font-size:0.9rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.05em; margin-bottom:20px;">Related Utilities:</h3>
+            <div style="display:flex; gap:16px; flex-wrap:wrap;">
+                <a href="../color-picker/" style="color:var(--accent-bright); font-size:0.85rem; font-weight:500;">Color Picker</a>
+                <a href="../json-formatter/" style="color:var(--accent-bright); font-size:0.85rem; font-weight:500;">JSON Formatter</a>
+                <a href="../jwt-decoder/" style="color:var(--accent-bright); font-size:0.85rem; font-weight:500;">JWT Decoder</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- TOAST NOTIFIER -->
+    <div class="toast" id="toast-notify">
+        <span style="font-size: 1.1rem;">✓</span>
+        <span id="toast-text">Copied to clipboard!</span>
+    </div>
+
+    <!-- MAIN FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>DEVFORGES</h3>
+                <p>Premium developer utilities designed for privacy, speed, and seamless aesthetics. 100% offline-first local execution.</p>
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Subscribe to updates..." aria-label="Newsletter email" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Core Tools</h4>
+                <ul class="footer-links">
+                    <li><a href="../json-formatter/" class="footer-link">JSON Formatter</a></li>
+                    <li><a href="../base64/" class="footer-link">Base64 Encoder</a></li>
+                    <li><a href="../regex/" class="footer-link">Regex Tester</a></li>
+                    <li><a href="../url-encoder/" class="footer-link">URL Encoder</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal & Privacy</h4>
+                <ul class="footer-links">
+                    <li><a href="../privacy/index.html" class="footer-link">Privacy Statement</a></li>
+                    <li><a href="../terms/index.html" class="footer-link">Terms of Service</a></li>
+                    <li><a href="../about/index.html" class="footer-link">Security Disclosures</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Sitemap Directory</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html" class="footer-link">Home (Back to Top)</a></li>
+                    <li><a href="../tools/index.html" class="footer-link">Tools Space</a></li>
+                    <li><a href="../pricing/index.html" class="footer-link">Pricing Models</a></li>
+                    <li><a href="../blog/index.html" class="footer-link">Developer Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <span>&copy; 2026 Devforges Studio. All rights reserved. Zero cookies tracked.</span>
+            <span>DEVFORGES — Developer Tools. Reimagined.</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/particle-bg.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const fgPicker = document.getElementById('color-fg-picker');
+            const fgHex = document.getElementById('color-fg-hex');
+            const bgPicker = document.getElementById('color-bg-picker');
+            const bgHex = document.getElementById('color-bg-hex');
+            
+            const ratioDisplay = document.getElementById('ratio-display');
+            const ratioEval = document.getElementById('ratio-evaluation-badge');
+            
+            const badgeNormalAA = document.getElementById('badge-normal-aa');
+            const badgeLargeAA = document.getElementById('badge-large-aa');
+            const badgeNormalAAA = document.getElementById('badge-normal-aaa');
+            const badgeLargeAAA = document.getElementById('badge-large-aaa');
+            
+            const previewBox = document.getElementById('preview-box');
+            const previewLarge = document.getElementById('preview-large-text');
+            const previewNormal = document.getElementById('preview-normal-text');
+            
+            const statusBadge = document.getElementById('compliance-status');
+            const btnInvert = document.getElementById('btn-invert');
+
+            // Convert HEX string to relative RGB values
+            function hexToRgb(hex) {
+                // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+                const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+                hex = hex.replace(shorthandRegex, (m, r, g, b) => r + r + g + g + b + b);
+                const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+                return result ? {
+                    r: parseInt(result[1], 16),
+                    g: parseInt(result[2], 16),
+                    b: parseInt(result[3], 16)
+                } : null;
+            }
+
+            // Calculate WCAG relative luminance
+            function getLuminance(rgb) {
+                let a = [rgb.r, rgb.g, rgb.b].map((v) => {
+                    v /= 255;
+                    return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4);
+                });
+                return a[0] * 0.2126 + a[1] * 0.7152 + a[2] * 0.0722;
+            }
+
+            // Calculate WCAG contrast ratio
+            function getContrastRatio(fg, bg) {
+                const fgRgb = hexToRgb(fg);
+                const bgRgb = hexToRgb(bg);
+                if (!fgRgb || !bgRgb) return 1.0;
+
+                const l1 = getLuminance(fgRgb);
+                const l2 = getLuminance(bgRgb);
+                
+                return (Math.max(l1, l2) + 0.05) / (Math.min(l1, l2) + 0.05);
+            }
+
+            function updateUI() {
+                const fgVal = fgHex.value.trim();
+                const bgVal = bgHex.value.trim();
+
+                const ratio = getContrastRatio(fgVal, bgVal);
+                const formattedRatio = ratio.toFixed(2);
+                ratioDisplay.textContent = `${formattedRatio}:1`;
+
+                // Update preview colors
+                previewBox.style.color = fgVal;
+                previewBox.style.backgroundColor = bgVal;
+
+                // Validate compliance parameters
+                const passNormalAA = ratio >= 4.5;
+                const passLargeAA = ratio >= 3.0;
+                const passNormalAAA = ratio >= 7.0;
+                const passLargeAAA = ratio >= 4.5;
+
+                setBadgeState(badgeNormalAA, passNormalAA);
+                setBadgeState(badgeLargeAA, passLargeAA);
+                setBadgeState(badgeNormalAAA, passNormalAAA);
+                setBadgeState(badgeLargeAAA, passLargeAAA);
+
+                // Overall audit indicator
+                if (passNormalAAA) {
+                    ratioEval.textContent = 'PASS AAA';
+                    ratioEval.style.background = 'rgba(16, 185, 129, 0.15)';
+                    ratioEval.style.color = 'var(--success-color)';
+                    ratioEval.style.borderColor = 'var(--success-color)';
+                    
+                    statusBadge.textContent = 'AAA compliant';
+                    statusBadge.style.background = 'rgba(16, 185, 129, 0.2)';
+                    statusBadge.style.color = 'var(--success-color)';
+                } else if (passNormalAA) {
+                    ratioEval.textContent = 'PASS AA';
+                    ratioEval.style.background = 'rgba(59, 130, 246, 0.15)';
+                    ratioEval.style.color = '#60a5fa';
+                    ratioEval.style.borderColor = '#3b82f6';
+                    
+                    statusBadge.textContent = 'AA compliant';
+                    statusBadge.style.background = 'rgba(59, 130, 246, 0.2)';
+                    statusBadge.style.color = '#60a5fa';
+                } else {
+                    ratioEval.textContent = 'FAIL';
+                    ratioEval.style.background = 'rgba(239, 68, 68, 0.15)';
+                    ratioEval.style.color = '#f87171';
+                    ratioEval.style.borderColor = '#ef4444';
+                    
+                    statusBadge.textContent = 'Low Contrast';
+                    statusBadge.style.background = 'rgba(239, 68, 68, 0.2)';
+                    statusBadge.style.color = '#f87171';
+                }
+            }
+
+            function setBadgeState(badge, isPass) {
+                if (isPass) {
+                    badge.textContent = 'PASS';
+                    badge.style.background = 'rgba(16, 185, 129, 0.15)';
+                    badge.style.color = 'var(--success-color)';
+                    badge.style.borderColor = 'var(--success-color)';
+                } else {
+                    badge.textContent = 'FAIL';
+                    badge.style.background = 'rgba(239, 68, 68, 0.15)';
+                    badge.style.color = '#f87171';
+                    badge.style.borderColor = '#ef4444';
+                }
+            }
+
+            // Sync picker and text hex inputs
+            function setupSync(picker, input) {
+                picker.addEventListener('input', () => {
+                    input.value = picker.value.toUpperCase();
+                    updateUI();
+                });
+                input.addEventListener('input', () => {
+                    const val = input.value.trim();
+                    if (/^#[0-9A-F]{6}$/i.test(val)) {
+                        picker.value = val;
+                        updateUI();
+                    }
+                });
+            }
+
+            setupSync(fgPicker, fgHex);
+            setupSync(bgPicker, bgHex);
+
+            // Presets
+            document.querySelectorAll('.swatch-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const fg = btn.getAttribute('data-fg');
+                    const bg = btn.getAttribute('data-bg');
+                    fgHex.value = fg.toUpperCase();
+                    bgHex.value = bg.toUpperCase();
+                    fgPicker.value = fg;
+                    bgPicker.value = bg;
+                    updateUI();
+                });
+            });
+
+            // Invert colors action
+            btnInvert.addEventListener('click', () => {
+                const tempFg = fgHex.value;
+                const tempBg = bgHex.value;
+
+                fgHex.value = tempBg;
+                bgHex.value = tempFg;
+                fgPicker.value = tempBg;
+                bgPicker.value = tempFg;
+                updateUI();
+            });
+
+            updateUI();
+
+            // FAQ Accordions
+            document.querySelectorAll('.faq-trigger').forEach(trig => {
+                trig.onclick = function() {
+                    const item = this.parentElement;
+                    const content = item.querySelector('.faq-content');
+                    const isActive = item.classList.contains('active');
+                    
+                    document.querySelectorAll('.faq-item').forEach(el => {
+                        el.classList.remove('active');
+                        el.querySelector('.faq-content').style.maxHeight = null;
+                    });
+
+                    if (!isActive) {
+                        item.classList.add('active');
+                        content.style.maxHeight = content.scrollHeight + "px";
+                    }
+                };
+            });
+        });
+    </script>
+</body>
+</html>

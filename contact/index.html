@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>\n    <script>
+        (function() {
+            const theme = localStorage.getItem('devforges_theme') || 'onyx';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.classList.add('js-active');
+        })();
+    </script>
+    <style>
+        html { background-color: #0a0a0f; }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Get in touch with the DEVFORGES team. Suggest new local-first utilities, file bugs, or submit feedback forms.">
+    <link rel="canonical" href="https://devforges.netlify.app/contact/">
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="Contact Channels — DEVFORGES">
+    <meta property="og:description" content="Reach out to DEVFORGES. Suggest utilities or report rendering behaviors.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://devforges.netlify.app/contact/">
+    <meta property="og:image" content="https://devforges.netlify.app/assets/img/og-preview.png">
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/style.css">
+
+    <title>Contact Channels | DEVFORGES</title>
+</head>
+<body data-root-path="../">
+
+    <!-- Noise Screen Layer -->
+    <div class="noise-overlay"></div>
+
+    <!-- Background Aurora & Floating Orbs -->
+    <div class="aurora-container">
+        <div class="aurora"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- STICKY GLASS NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>DEVFORGES</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../tools/index.html" class="nav-link">Tools</a></li>
+                <li><a href="../pricing/index.html" class="nav-link">Pricing</a></li>
+                <li><a href="../blog/index.html" class="nav-link">Blog</a></li>
+                <li><a href="../about/index.html" class="nav-link">About</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-search-trigger" id="search-trigger" aria-label="Open command palette">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right: 4px;">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <span>Search</span>
+                    <kbd>⌘K</kbd>
+                </button>
+
+                <div class="theme-selector-wrapper">
+                    <select class="form-select" id="theme-selector" aria-label="Select theme">
+                        <option value="onyx">Midnight Onyx</option>
+                        <option value="obsidian">Obsidian Black</option>
+                        <option value="matrix">Neon Matrix</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT SPACE -->
+    <main class="content-container" style="padding-top: 95px;">
+        <h1>Contact Us</h1>
+        <p style="color: var(--text-secondary); line-height: 1.5; margin-bottom: 24px;">
+            Have a custom tool suggestion, discovered rendering anomalies, or want to discuss enterprise desktop integrations? We value your input.
+        </p>
+
+        <section style="background: rgba(255,255,255,0.005); border: 1px solid var(--border-primary); padding: 32px; border-radius: 12px; margin-bottom: 30px;">
+            <form onsubmit="event.preventDefault(); alert('Thank you! Your feedback has been simulated and logged locally.'); this.reset();" style="display: flex; flex-direction: column; gap: 16px;">
+                <div class="form-group">
+                    <label class="form-label">Email Address</label>
+                    <input type="email" class="form-input" placeholder="you@domain.com" required style="background: rgba(0,0,0,0.3);">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Subject</label>
+                    <input type="text" class="form-input" placeholder="Tool suggestion / Bug report..." required style="background: rgba(0,0,0,0.3);">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Message Details</label>
+                    <textarea class="form-input" placeholder="Tell us how we can improve DEVFORGES..." required style="min-height: 120px; background: rgba(0,0,0,0.3); resize: vertical; font-family: var(--font-sans);"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: fit-content; border: none; padding: 10px 24px;">Submit Message</button>
+            </form>
+        </section>
+
+        <section>
+            <h2>Alternative Channels</h2>
+            <p>
+                You can also connect with us via public feedback threads:
+            </p>
+            <ul>
+                <li>Email Support: <code style="color: var(--accent-bright);">support@devforges.netlify.app</code></li>
+                <li>GitHub Repo: <a href="https://github.com/" target="_blank" rel="noopener" style="color: var(--accent-bright); text-decoration: underline;">GitHub Issues</a></li>
+            </ul>
+        </section>
+    </main>
+
+    <!-- FUZZY SEARCH COMMAND PALETTE MODAL -->
+    <div class="modal-overlay" id="command-modal-overlay">
+        <div class="palette-container">
+            <div class="palette-search-box">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" class="palette-input" id="command-palette-input" placeholder="Type a tool command or action... (e.g. JSON)" autofocus>
+            </div>
+            <div class="palette-results" id="command-palette-results">
+                <!-- Items populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>DEVFORGES</h3>
+                <p>Premium developer utilities designed for privacy, speed, and seamless aesthetics. 100% offline-first local execution.</p>
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Subscribe to updates..." aria-label="Newsletter email" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Core Tools</h4>
+                <ul class="footer-links">
+                    <li><a href="../tool/json-formatter/" class="footer-link">JSON Formatter</a></li>
+                    <li><a href="../base64/" class="footer-link">Base64 Encoder</a></li>
+                    <li><a href="../regex/" class="footer-link">Regex Tester</a></li>
+                    <li><a href="../url-encoder/" class="footer-link">URL Encoder</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal & Privacy</h4>
+                <ul class="footer-links">
+                    <li><a href="../privacy/index.html" class="footer-link">Privacy Statement</a></li>
+                    <li><a href="../terms/index.html" class="footer-link">Terms of Service</a></li>
+                    <li><a href="../about/index.html" class="footer-link">Security Disclosures</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Sitemap Directory</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html" class="footer-link">Home (Back to Top)</a></li>
+                    <li><a href="../tools/index.html" class="footer-link">Tools Space</a></li>
+                    <li><a href="../pricing/index.html" class="footer-link">Pricing Models</a></li>
+                    <li><a href="../blog/index.html" class="footer-link">Developer Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <span>&copy; 2026 Devforges Studio. All rights reserved. Zero cookies tracked.</span>
+            <span>DEVFORGES — Developer Tools. Reimagined.</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/particle-bg.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>\n    <script>
+        (function() {
+            const theme = localStorage.getItem('devforges_theme') || 'onyx';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.classList.add('js-active');
+        })();
+    </script>
+    <style>
+        html { background-color: #0a0a0f; }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Discover the mission behind DEVFORGES: Built by developers, for developers because privacy matters. 100% local, sandboxed offline utility architectures.">
+    <link rel="canonical" href="https://devforges.netlify.app/about/">
+    <link rel="preload" href="../assets/css/style.css" as="style">
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="manifest" href="../manifest.json">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="About Security & Disclosures — DEVFORGES">
+    <meta property="og:description" content="Discover the local-first principles behind DEVFORGES and why it respects developer data privacy.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://devforges.netlify.app/about/">
+    <meta property="og:image" content="https://devforges.netlify.app/assets/img/og-preview.png">
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <title>About Security & Disclosures | DEVFORGES</title>
+</head>
+<body data-root-path="../">
+
+    <!-- Noise Screen Layer -->
+    <div class="noise-overlay"></div>
+
+    <!-- Background Aurora & Floating Orbs -->
+    <div class="aurora-container">
+        <div class="aurora"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- STICKY GLASS NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../index.html" class="nav-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>DEVFORGES</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="../index.html" class="nav-link">Home</a></li>
+                <li><a href="../tools/index.html" class="nav-link">Tools</a></li>
+                <li><a href="../pricing/index.html" class="nav-link">Pricing</a></li>
+                <li><a href="../blog/index.html" class="nav-link">Blog</a></li>
+                <li><a href="../about/index.html" class="nav-link active">About</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-search-trigger" id="search-trigger" aria-label="Open command palette">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right: 4px;">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <span>Search</span>
+                    <kbd>⌘K</kbd>
+                </button>
+
+                <div class="theme-selector-wrapper">
+                    <select class="form-select" id="theme-selector" aria-label="Select theme">
+                        <option value="onyx">Midnight Onyx</option>
+                        <option value="obsidian">Obsidian Black</option>
+                        <option value="matrix">Neon Matrix</option>
+                    </select>
+                </div>
+
+                <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT SPACE -->
+    <main class="content-container fade-in" style="padding-top: 90px;">
+        <h1 style="font-size: 2.2rem; font-weight: 800; margin-bottom: 8px;">About DEVFORGES</h1>
+        <p style="color: var(--accent-bright); font-size: 1.1rem; margin-bottom: 32px; font-weight: 500;">
+            Built by developers, for developers. DEVFORGES exists because privacy matters.
+        </p>
+        
+        <section style="margin-bottom: 40px;">
+            <h2>The Local-First Philosophy</h2>
+            <p>
+                As developers, we are constantly handling raw database payloads, API configuration arrays, regex strings, JSON Web Tokens containing sensitive parameters, and database schemas. Copying this data into traditional online formatting tools represents a significant security leak risk.
+            </p>
+            <p>
+                <strong>DEVFORGES is different.</strong> All utilities in our suite execute 100% inside your local browser sandbox virtual context. There is no remote execution server backend.
+            </p>
+        </section>
+
+        <!-- Dynamic Architecture flow diagram in SVG -->
+        <section style="margin-bottom: 40px; background: rgba(255,255,255,0.01); border: 1px solid var(--border-primary); padding: 24px; border-radius: 12px;">
+            <h3 style="margin-top:0; margin-bottom: 16px;">How it Works: Sandbox Architecture</h3>
+            <div style="display: flex; justify-content: center; align-items: center; width: 100%; overflow-x: auto;">
+                <svg width="600" height="150" viewBox="0 0 600 150" fill="none" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%;">
+                    <!-- Input Block -->
+                    <rect x="10" y="45" width="120" height="60" rx="8" fill="rgba(255,255,255,0.02)" stroke="var(--border-primary)" stroke-width="2"/>
+                    <text x="70" y="80" fill="var(--text-primary)" font-size="14" text-anchor="middle" font-family="var(--font-sans)">Input Data</text>
+
+                    <!-- Arrow 1 -->
+                    <line x1="130" y1="75" x2="190" y2="75" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4"/>
+                    <polygon points="190,70 190,80 200,75" fill="var(--accent)"/>
+
+                    <!-- Local Sandbox -->
+                    <rect x="200" y="25" width="200" height="100" rx="12" fill="rgba(139, 92, 246, 0.05)" stroke="var(--accent)" stroke-width="2"/>
+                    <text x="300" y="70" fill="var(--accent-bright)" font-size="15" font-weight="700" text-anchor="middle" font-family="var(--font-sans)">Local Sandbox</text>
+                    <text x="300" y="90" fill="var(--text-secondary)" font-size="12" text-anchor="middle" font-family="var(--font-sans)">(Browser Memory)</text>
+
+                    <!-- Arrow 2 -->
+                    <line x1="400" y1="75" x2="460" y2="75" stroke="var(--accent)" stroke-width="2" stroke-dasharray="4"/>
+                    <polygon points="460,70 460,80 470,75" fill="var(--accent)"/>
+
+                    <!-- Output Block -->
+                    <rect x="470" y="45" width="120" height="60" rx="8" fill="rgba(255,255,255,0.02)" stroke="var(--border-primary)" stroke-width="2"/>
+                    <text x="530" y="80" fill="var(--text-primary)" font-size="14" text-anchor="middle" font-family="var(--font-sans)">Secure Output</text>
+
+                    <!-- Remote Threat Block (Crossed out) -->
+                    <path d="M 300 0 L 300 25" stroke="#ef4444" stroke-width="2"/>
+                    <line x1="260" y1="12" x2="340" y2="12" stroke="#ef4444" stroke-width="2" stroke-dasharray="4"/>
+                    <text x="300" y="8" fill="#f87171" font-size="10" text-anchor="middle" font-family="var(--font-mono)">[Blocked: Remote Server Uploads]</text>
+                </svg>
+            </div>
+        </section>
+
+        <section style="margin-bottom: 40px;">
+            <h2>Security & Telemetry Disclosures</h2>
+            <p>
+                DEVFORGES implements uncompromising privacy policies:
+            </p>
+            <ul style="margin-left: 24px; margin-bottom: 24px;">
+                <li><strong>No Network Transmissions</strong>: 100% of clipboard parsing, conversions, date translation, and hash computations are locked in standard browser VM execution scopes.</li>
+                <li><strong>Zero Telemetry Logging</strong>: No backend handles telemetry reporting, session tracking vectors, or database entries.</li>
+                <li><strong>Offline Auditing Assurance</strong>: Developers can review network loops under the DevTools Audit panel, or disconnect from the web entirely to perform calculations.</li>
+            </ul>
+        </section>
+
+        <section style="margin-bottom: 50px;">
+            <h2>Open-Source Audits & Transparency</h2>
+            <p>
+                Security tools deserve absolute auditability. DEVFORGES uses native browser APIs and client-side vanilla structures without bloatware libraries, ensuring high execution speeds and complete transparency.
+            </p>
+            <p style="margin-top: 24px;">
+                Have custom utility recommendations or security architecture feedback? Get in touch immediately.
+            </p>
+            <div style="margin-top: 20px;">
+                <a href="../contact/index.html" class="btn btn-primary btn-glow">Contact Channels</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- FUZZY SEARCH COMMAND PALETTE MODAL -->
+    <div class="modal-overlay" id="command-modal-overlay">
+        <div class="palette-container">
+            <div class="palette-search-box">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" class="palette-input" id="command-palette-input" placeholder="Type a tool command or action... (e.g. JSON)" autofocus>
+            </div>
+            <div class="palette-results" id="command-palette-results">
+                <!-- Items populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>DEVFORGES</h3>
+                <p>Premium developer utilities designed for privacy, speed, and seamless aesthetics. 100% offline-first local execution.</p>
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Subscribe to updates..." aria-label="Newsletter email" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Core Tools</h4>
+                <ul class="footer-links">
+                    <li><a href="../tool/json-formatter/" class="footer-link">JSON Formatter</a></li>
+                    <li><a href="../tool/base64/" class="footer-link">Base64 Encoder</a></li>
+                    <li><a href="../tool/regex/" class="footer-link">Regex Tester</a></li>
+                    <li><a href="../tool/url-encoder/" class="footer-link">URL Encoder</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal & Privacy</h4>
+                <ul class="footer-links">
+                    <li><a href="../privacy/index.html" class="footer-link">Privacy Statement</a></li>
+                    <li><a href="../terms/index.html" class="footer-link">Terms of Service</a></li>
+                    <li><a href="../about/index.html" class="footer-link">Security Disclosures</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Sitemap Directory</h4>
+                <ul class="footer-links">
+                    <li><a href="../index.html" class="footer-link">Home (Back to Top)</a></li>
+                    <li><a href="../tools/index.html" class="footer-link">Tools Space</a></li>
+                    <li><a href="../pricing/index.html" class="footer-link">Pricing Models</a></li>
+                    <li><a href="../blog/index.html" class="footer-link">Developer Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <span>&copy; 2026 Devforges Studio. All rights reserved. Zero cookies tracked.</span>
+            <span>DEVFORGES — Developer Tools. Reimagined.</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../assets/js/common.js"></script>
+    <script src="../assets/js/particle-bg.js"></script>
+    <script>
+        const observerOptions = { threshold: 0.1 };
+        const fadeObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+        document.querySelectorAll('.fade-in').forEach(el => fadeObserver.observe(el));
+    </script>
+</body>
+</html>

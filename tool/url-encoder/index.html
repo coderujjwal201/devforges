@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>\n    <script>
+        (function() {
+            const theme = localStorage.getItem('devforges_theme') || 'onyx';
+            document.documentElement.setAttribute('data-theme', theme);
+            document.documentElement.classList.add('js-active');
+        })();
+    </script>
+    <style>
+        html { background-color: #0a0a0f; }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Encode and decode URLs and query parameters instantly client-side. Live spreadsheet editor to add, edit, or delete parameter fields seamlessly.">
+    <link rel="canonical" href="https://devforges.netlify.app/tool/url-encoder/">
+    <link rel="preload" href="../../assets/css/style.css" as="style">
+    <link rel="stylesheet" href="../../assets/css/style.css">
+    <link rel="manifest" href="../../manifest.json">
+    <meta name="theme-color" content="#0a0a0f">
+    <meta name="robots" content="index, follow">
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="URL Encoder / Decoder & Params Editor | DEVFORGES">
+    <meta property="og:description" content="Secure, client-side URL encoder. Edit query string parameters inside structured grids with live syncing.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://devforges.netlify.app/tool/url-encoder/">
+    <meta property="og:image" content="https://devforges.netlify.app/assets/img/og-preview.png">
+
+    <!-- Stylesheets -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+    <title>URL Encoder / Decoder & Params Editor | DEVFORGES</title>
+
+    <!-- Structured Data Schema -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "DEVFORGES URL Encoder",
+      "url": "https://devforges.netlify.app/tool/url-encoder/",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "All",
+      "browserRequirements": "Requires Standard browser URL parsing API.",
+      "description": "Encode and decode query strings while mapping items into editable key-value grids client-side.",
+      "featureList": "URL encoder, query parameters grid editor, bi-directional input syncing, offline availability"
+    }
+    </script>
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [{
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://devforges.netlify.app/"
+      },{
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Tools",
+        "item": "https://devforges.netlify.app/tools/"
+      },{
+        "@type": "ListItem",
+        "position": 3,
+        "name": "URL Encoder / Decoder",
+        "item": "https://devforges.netlify.app/tool/url-encoder/"
+      }]
+    }
+    </script>
+</head>
+<body data-root-path="../../" data-tool-id="url-encoder">
+
+    <!-- Noise Screen Layer -->
+    <div class="noise-overlay"></div>
+
+    <!-- Background Aurora & Floating Orbs -->
+    <div class="aurora-container">
+        <div class="aurora"></div>
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+    </div>
+
+    <!-- STICKY GLASS NAVBAR -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="../../index.html" class="nav-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+                </svg>
+                <span>DEVFORGES</span>
+            </a>
+            
+            <ul class="nav-links">
+                <li><a href="../../index.html" class="nav-link">Home</a></li>
+                <li><a href="../../tools/index.html" class="nav-link active">Tools</a></li>
+                <li><a href="../../pricing/index.html" class="nav-link">Pricing</a></li>
+                <li><a href="../../blog/index.html" class="nav-link">Blog</a></li>
+                <li><a href="../../about/index.html" class="nav-link">About</a></li>
+            </ul>
+
+            <div class="nav-actions">
+                <button class="nav-search-trigger" id="search-trigger" aria-label="Open command palette">
+                    <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right: 4px;">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                    </svg>
+                    <span>Search</span>
+                    <kbd>⌘K</kbd>
+                </button>
+
+                <div class="theme-selector-wrapper">
+                    <select class="form-select" id="theme-selector" aria-label="Select theme">
+                        <option value="onyx">Midnight Onyx</option>
+                        <option value="obsidian">Obsidian Black</option>
+                        <option value="matrix">Neon Matrix</option>
+                    </select>
+                </div>
+
+                <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Toggle navigation menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENT SHOWCASE SPACE -->
+    <main class="hero fade-in" style="padding-top: 90px; text-align: left; align-items: stretch; max-width: 1300px;">
+        <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="../../index.html">Home</a></li>
+            <li class="breadcrumb-item"><a href="../../tools/index.html">Tools</a></li>
+            <li class="breadcrumb-item">URL Encoder</li>
+        </ul>
+
+        <div class="hero-badge badge" style="width: fit-content; align-self: flex-start; margin-bottom: 16px;">
+            Encoders & Decoders / URL Encoder
+        </div>
+        
+        <div class="hero-dashboard-preview" style="transform: none; opacity: 1; margin-bottom: 40px;">
+            <div class="hero-preview-bar">
+                <div class="window-dots">
+                    <div class="window-dot"></div>
+                    <div class="window-dot"></div>
+                    <div class="window-dot"></div>
+                </div>
+                <div class="window-title">devforges://tool/url-encoder</div>
+                <div style="width: 48px;"></div>
+            </div>
+
+            <div class="hero-preview-content">
+                <!-- Sidebar lists -->
+                <aside class="hero-preview-sidebar">
+                    <div class="sidebar-category-header">Formatters</div>
+                    <a href="../json-formatter/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M5 3h14c1.1 0 2 .9 2 2v14c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2V5c0-1.1.9-2 2-2zm0 16h14V5H5v14zm2-12h10v2H7V7zm0 4h10v2H7v-2zm0 4h7v2H7v-2z"/></svg>
+                        <span>JSON Formatter</span>
+                    </a>
+                    <a href="../jwt-decoder/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        <span>JWT Decoder</span>
+                    </a>
+                    
+                    <div class="sidebar-category-header">Encoders</div>
+                    <a href="../base64/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M12.5 8c-2.65 0-5.05.99-6.9 2.6L2 7v9h9l-3.62-3.62C8.77 11.22 10.54 10.5 12.5 10.5c3.54 0 6.55 2.31 7.6 5.5l2.37-.78C21.08 11.03 17.15 8 12.5 8z"/></svg>
+                        <span>Base64 Converter</span>
+                    </a>
+                    <a href="../url-encoder/" class="sidebar-item active">
+                        <svg viewBox="0 0 24 24"><path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/></svg>
+                        <span>URL Encoder</span>
+                    </a>
+                    <a href="../hash-generator/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M12.85 4.51l6.43 6.43c.78.78.78 2.05 0 2.83l-6.43 6.43c-.78.78-2.05.78-2.83 0l-6.43-6.43c-.78-.78-.78-2.05 0-2.83l6.43-6.43c.78-.78 2.05-.78 2.83 0z"/></svg>
+                        <span>Hash Generator</span>
+                    </a>
+                    <a href="../timestamp/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67V7z"/></svg>
+                        <span>Timestamp Converter</span>
+                    </a>
+
+                    <div class="sidebar-category-header">Text</div>
+                    <a href="../regex/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M6 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm12 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm-6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/></svg>
+                        <span>Regex Tester</span>
+                    </a>
+                    <a href="../word-counter/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M3 9h14V7H3v2zm0 4h14v-2H3v2zm0 4h9v-2H3v2zm16-4h2v-2h-2v2zm0-4h2V7h-2v2zm0 8h2v-2h-2v2z"/></svg>
+                        <span>Word Counter</span>
+                    </a>
+                    <a href="../lorem/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M14 17H4v2h10v-2zm6-8H4v2h16V9zm0 4H4v2h16v-2zM4 5v2h16V5H4z"/></svg>
+                        <span>Lorem Generator</span>
+                    </a>
+                    <a href="../diff-checker/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h10v2H4z"/></svg>
+                        <span>Diff Checker</span>
+                    </a>
+
+                    <div class="sidebar-category-header">Design</div>
+                    <a href="../color-picker/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 0 0-9 9c0 4.97 4.02 9 9 9 1 0 1.8-.8 1.8-1.8 0-.47-.18-.92-.5-1.28a.38.38 0 0 1-.08-.26c0-.22.18-.4.4-.4h1.78c4.97 0 9-4.03 9-9 0-4.97-4.03-9-9-9zm-5 9c-.83 0-1.5-.67-1.5-1.5S6.17 9 7 9s1.5.67 1.5 1.5S7.83 12 7 12zm3-4c-.83 0-1.5-.67-1.5-1.5S9.17 5 10 5s1.5.67 1.5 1.5S10.83 8 10 8zm4 0c-.83 0-1.5-.67-1.5-1.5S13.17 5 14 5s1.5.67 1.5 1.5S14.83 8 14 8zm3 4c-.83 0-1.5-.67-1.5-1.5S16.17 9 17 9s1.5.67 1.5 1.5S17.83 12 17 12z"/></svg>
+                        <span>Color Picker</span>
+                    </a>
+                    <a href="../contrast-checker/" class="sidebar-item">
+                        <svg viewBox="0 0 24 24"><path d="M12 22c5.52 0 10-4.48 10-10S17.52 2 12 2 2 6.48 2 12s4.48 10 10 10zm1-17.93c3.95.49 7 3.85 7 7.93s-3.05 7.44-7 7.93V4.07z"/></svg>
+                        <span>Contrast Checker</span>
+                    </a>
+                </aside>
+
+                <!-- Work Area -->
+                <main class="hero-preview-workarea">
+                    <div class="workspace-header">
+                        <div class="workspace-title">URL Encoder / Decoder & Params Editor</div>
+                        <div class="workspace-actions">
+                            <button class="workspace-btn" id="btn-sample" title="Prefill sample URL">
+                                <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                                <span>Prefill URL</span>
+                            </button>
+                            <button class="workspace-btn" id="btn-clear" title="Clear inputs">
+                                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                                <span>Clear</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="split-pane">
+                        <!-- Left pane: Input -->
+                        <div class="pane-input">
+                            <div class="workspace-header" style="border-bottom: 1px solid var(--border-primary); padding: 6px 12px; background: rgba(0,0,0,0.1);">
+                                <div class="form-group" style="width: 100%;">
+                                    <select class="form-select" id="ctrl-url-mode" aria-label="URL mode selection">
+                                        <option value="decode">Decode & Edit query parameters table</option>
+                                        <option value="encode">Encode string query parameters</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <textarea class="pane-textarea" id="tool-input-textarea" placeholder="Paste full URL link or relative path parameters string here..."></textarea>
+                        </div>
+
+                        <!-- Right pane: Output -->
+                        <div class="pane-output">
+                            <div class="workspace-header" style="border-bottom: 1px solid var(--border-primary); padding: 6px 12px; background: rgba(0,0,0,0.1);">
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Decoded Params Inspector</span>
+                                <div class="workspace-actions">
+                                    <button class="workspace-btn" id="btn-copy">
+                                        <svg viewBox="0 0 24 24"><path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>
+                                        <span>Copy URL</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="pane-output-content" id="tool-output-display"></div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+
+        <!-- DOCUMENTATION SECTION -->
+        <section class="doc-section">
+            <article class="doc-content">
+                <h2>URL Encoder / Decoder & Parameters Editor</h2>
+                <p>
+                    Bi-directionally translate query parameter elements to URL-safe percentage encodings, or map complex search strings back into editable key-value grids. Standard URL spec rules require queries (RFC 3986) to represent certain keywords inside hex-encodings.
+                </p>
+
+                <h3>How to Use</h3>
+                <ol>
+                    <li>Choose your mode. Set to **Decode** to unpack parameters into a structured, editable grid. Set to **Encode** to escape symbols into safe formats.</li>
+                    <li>Paste your target URL or query string into the left input editor.</li>
+                    <li>In **Decode** mode, review the **Decoded Params Inspector** table on the right. You can edit existing keys, modify parameter values, click **&times;** to delete rows, or click **+ Add Query Parameter** to append new ones.</li>
+                    <li>Editing the grid updates the left input URL dynamically, and vice versa.</li>
+                </ol>
+
+                <h3>Frequently Asked Questions</h3>
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>Why does the URL parameter spreadsheet support editable rows?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    </button>
+                    <div class="faq-content">
+                        <p>Rather than manually typing complex percent escapes like <code>%20</code> or <code>%3F</code>, the grid allows developers to configure values visually, syncing back structure in one click.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-trigger">
+                        <span>How does the tool handle relative URL strings?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                    </button>
+                    <div class="faq-content">
+                        <p>If the path does not contain a protocol (like `http://`), we attach a temporary dummy host locally to parse parameters cleanly using browser APIs, stripping it out afterwards to output relative queries correctly.</p>
+                    </div>
+                </div>
+            </article>
+        </section>
+    </main>
+
+    <!-- FUZZY SEARCH COMMAND PALETTE MODAL -->
+    <div class="modal-overlay" id="command-modal-overlay">
+        <div class="palette-container">
+            <div class="palette-search-box">
+                <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+                <input type="text" class="palette-input" id="command-palette-input" placeholder="Type a tool command or action... (e.g. JSON)" autofocus>
+            </div>
+            <div class="palette-results" id="command-palette-results">
+                <!-- Items populated by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFIER -->
+    <div class="toast" id="toast-notify">
+        <span style="font-size: 1.1rem;">✓</span>
+        <span id="toast-text">Copied to clipboard!</span>
+    </div>
+
+    <!-- MAIN FOOTER -->
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <h3>DEVFORGES</h3>
+                <p>Premium developer utilities designed for privacy, speed, and seamless aesthetics. 100% offline-first local execution.</p>
+                <form class="newsletter-form">
+                    <input type="email" class="newsletter-input" placeholder="Subscribe to updates..." aria-label="Newsletter email" required>
+                    <button type="submit" class="newsletter-btn">Subscribe</button>
+                </form>
+            </div>
+            
+            <div class="footer-col">
+                <h4>Core Tools</h4>
+                <ul class="footer-links">
+                    <li><a href="../json-formatter/" class="footer-link">JSON Formatter</a></li>
+                    <li><a href="../base64/" class="footer-link">Base64 Encoder</a></li>
+                    <li><a href="../regex/" class="footer-link">Regex Tester</a></li>
+                    <li><a href="../url-encoder/" class="footer-link">URL Encoder</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal & Privacy</h4>
+                <ul class="footer-links">
+                    <li><a href="../../privacy/index.html" class="footer-link">Privacy Statement</a></li>
+                    <li><a href="../../terms/index.html" class="footer-link">Terms of Service</a></li>
+                    <li><a href="../../about/index.html" class="footer-link">Security Disclosures</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Sitemap Directory</h4>
+                <ul class="footer-links">
+                    <li><a href="../../index.html" class="footer-link">Home (Back to Top)</a></li>
+                    <li><a href="../../tools/index.html" class="footer-link">Tools Space</a></li>
+                    <li><a href="../../pricing/index.html" class="footer-link">Pricing Models</a></li>
+                    <li><a href="../../blog/index.html" class="footer-link">Developer Blog</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <span>&copy; 2026 Devforges Studio. All rights reserved. Zero cookies tracked.</span>
+            <span>DEVFORGES — Developer Tools. Reimagined.</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="../../assets/js/common.js"></script>
+    <script src="../../assets/js/particle-bg.js"></script>
+    <script src="../../assets/js/tools/url-encoder.js"></script>
+    <script>
+        document.querySelectorAll('.faq-trigger').forEach(trigger => {
+            trigger.onclick = function() {
+                const item = this.parentElement;
+                const content = item.querySelector('.faq-content');
+                const isActive = item.classList.contains('active');
+                
+                document.querySelectorAll('.faq-item').forEach(el => {
+                    el.classList.remove('active');
+                    el.querySelector('.faq-content').style.maxHeight = null;
+                });
+
+                if (!isActive) {
+                    item.classList.add('active');
+                    content.style.maxHeight = content.scrollHeight + "px";
+                }
+            };
+        });
+    </script>
+</body>
+</html>
