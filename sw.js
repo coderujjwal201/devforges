@@ -61,6 +61,11 @@ self.addEventListener('fetch', (e) => {
         return;
     }
 
+    // Bypass service worker cache for local development
+    if (e.request.url.includes('127.0.0.1') || e.request.url.includes('localhost')) {
+        return;
+    }
+
     e.respondWith(
         caches.match(e.request).then((cachedResponse) => {
             if (cachedResponse) {

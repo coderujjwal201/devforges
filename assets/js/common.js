@@ -33,6 +33,10 @@ try {
                 document.documentElement.setAttribute('data-theme', newTheme);
                 localStorage.setItem(themeKey, newTheme);
                 
+                // Sync mobile theme select
+                const mobileSelect = document.getElementById('mobile-theme-selector');
+                if (mobileSelect) mobileSelect.value = newTheme;
+
                 // If particles are active, trigger redraw
                 if (window.reinitParticles) {
                     window.reinitParticles();
@@ -45,6 +49,7 @@ try {
         try { initCommandPalette(); } catch(e) { console.error("initCommandPalette error:", e); }
         try { initNewsletterForm(); } catch(e) { console.error("initNewsletterForm error:", e); }
         try { initMobileMenu(); } catch(e) { console.error("initMobileMenu error:", e); }
+        try { initSidebarDrawer(); } catch(e) { console.error("initSidebarDrawer error:", e); }
         try { initFadeIn(); } catch(e) { console.error("initFadeIn error:", e); }
     }
 
@@ -373,15 +378,93 @@ try {
     function initMobileMenu() {
         const navToggle = document.getElementById('mobile-nav-toggle');
         const navLinks = document.querySelector('.nav-links');
+        
         if (navToggle && navLinks) {
+            // Create mobile nav backdrop
+            let backdrop = document.getElementById('mobile-nav-backdrop');
+            if (!backdrop) {
+                backdrop = document.createElement('div');
+                backdrop.id = 'mobile-nav-backdrop';
+                backdrop.className = 'mobile-nav-backdrop';
+                document.body.appendChild(backdrop);
+                
+                backdrop.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    navToggle.classList.remove('active');
+                    document.body.classList.remove('mobile-menu-open');
+                    backdrop.classList.remove('active');
+                });
+            }
+
+            // Clone and append Search and Theme Switcher to mobile menu links dynamically
+            let mobileActions = navLinks.querySelector('.mobile-drawer-actions');
+            if (!mobileActions) {
+                mobileActions = document.createElement('div');
+                mobileActions.className = 'mobile-drawer-actions';
+                
+                // Clone search trigger
+                const searchTrigger = document.getElementById('search-trigger');
+                if (searchTrigger) {
+                    const mobileSearch = searchTrigger.cloneNode(true);
+                    mobileSearch.id = 'mobile-search-trigger';
+                    mobileSearch.onclick = (e) => {
+                        e.preventDefault();
+                        // Close mobile drawer
+                        navLinks.classList.remove('active');
+                        navToggle.classList.remove('active');
+                        document.body.classList.remove('mobile-menu-open');
+                        if (backdrop) backdrop.classList.remove('active');
+                        
+                        // Open command palette
+                        const overlay = document.getElementById('command-modal-overlay');
+                        const input = document.getElementById('command-palette-input');
+                        if (overlay && input) {
+                            overlay.classList.add('active');
+                            input.value = '';
+                            input.focus();
+                            // Trigger palette search rendering
+                            searchTrigger.click();
+                        }
+                    };
+                    mobileActions.appendChild(mobileSearch);
+                }
+                
+                // Clone theme switcher
+                const themeWrapper = document.querySelector('.theme-selector-wrapper');
+                if (themeWrapper) {
+                    const mobileTheme = themeWrapper.cloneNode(true);
+                    const mobileSelect = mobileTheme.querySelector('select');
+                    if (mobileSelect) {
+                        mobileSelect.id = 'mobile-theme-selector';
+                        mobileSelect.value = localStorage.getItem('devforges_theme') || 'onyx';
+                        mobileSelect.addEventListener('change', function() {
+                            const newTheme = this.value;
+                            document.documentElement.setAttribute('data-theme', newTheme);
+                            localStorage.setItem('devforges_theme', newTheme);
+                            
+                            // Synchronize other select
+                            const desktopSelect = document.getElementById('theme-selector');
+                            if (desktopSelect) desktopSelect.value = newTheme;
+
+                            if (window.reinitParticles) window.reinitParticles();
+                        });
+                    }
+                    mobileActions.appendChild(mobileTheme);
+                }
+                
+                navLinks.appendChild(mobileActions);
+            }
+
             navToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
                 const isActive = navLinks.classList.toggle('active');
                 navToggle.classList.toggle('active');
                 if (isActive) {
                     document.body.classList.add('mobile-menu-open');
+                    if (backdrop) backdrop.classList.add('active');
                 } else {
                     document.body.classList.remove('mobile-menu-open');
+                    if (backdrop) backdrop.classList.remove('active');
                 }
             });
 
@@ -391,6 +474,7 @@ try {
                     navLinks.classList.remove('active');
                     navToggle.classList.remove('active');
                     document.body.classList.remove('mobile-menu-open');
+                    if (backdrop) backdrop.classList.remove('active');
                 });
             });
 
@@ -400,8 +484,59 @@ try {
                     navLinks.classList.remove('active');
                     navToggle.classList.remove('active');
                     document.body.classList.remove('mobile-menu-open');
+                    if (backdrop) backdrop.classList.remove('active');
                 }
             });
+        }
+    }
+
+    // 8b. TOOL SIDEBAR MOBILE DRAWER
+    function initSidebarDrawer() {
+        const sidebar = document.querySelector('.hero-preview-sidebar');
+        if (!sidebar) return;
+
+        // Add close button
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'sidebar-close-btn';
+        closeBtn.setAttribute('aria-label', 'Close sidebar');
+        closeBtn.innerHTML = '✕';
+        closeBtn.onclick = () => {
+            sidebar.classList.remove('active');
+            document.body.classList.remove('sidebar-open');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            if (backdrop) backdrop.classList.remove('active');
+        };
+        sidebar.insertBefore(closeBtn, sidebar.firstChild);
+
+        // Create backdrop
+        let backdrop = document.getElementById('sidebar-backdrop');
+        if (!backdrop) {
+            backdrop = document.createElement('div');
+            backdrop.id = 'sidebar-backdrop';
+            backdrop.className = 'sidebar-backdrop';
+            backdrop.onclick = () => {
+                sidebar.classList.remove('active');
+                document.body.classList.remove('sidebar-open');
+                backdrop.classList.remove('active');
+            };
+            document.body.appendChild(backdrop);
+        }
+
+        // Add toggle button to workspace header
+        const workspaceActions = document.querySelector('.workspace-actions');
+        if (workspaceActions) {
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'workspace-btn mobile-sidebar-trigger';
+            toggleBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="margin-right: 4px;"><path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/></svg>
+                <span>Switch Tool</span>
+            `;
+            toggleBtn.onclick = () => {
+                sidebar.classList.add('active');
+                document.body.classList.add('sidebar-open');
+                if (backdrop) backdrop.classList.add('active');
+            };
+            workspaceActions.insertBefore(toggleBtn, workspaceActions.firstChild);
         }
     }
 
@@ -434,11 +569,21 @@ try {
 
     // PWA Service Worker Registration
     if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-            navigator.serviceWorker.register(rootPath + 'sw.js')
-                .then(reg => console.log('ServiceWorker registered with scope: ', reg.scope))
-                .catch(err => console.log('ServiceWorker registration failed: ', err));
-        });
+        if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            navigator.serviceWorker.getRegistrations().then(registrations => {
+                if (registrations.length > 0) {
+                    Promise.all(registrations.map(r => r.unregister())).then(() => {
+                        window.location.reload(true);
+                    });
+                }
+            });
+        } else {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register(rootPath + 'sw.js')
+                    .then(reg => console.log('ServiceWorker registered with scope: ', reg.scope))
+                    .catch(err => console.log('ServiceWorker registration failed: ', err));
+            });
+        }
     }
 
     // Export registry globally
