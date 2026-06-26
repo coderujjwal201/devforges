@@ -1,6 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>\n    <script>
+<head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BFLM00WSRD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-BFLM00WSRD');
+    </script>\n    <script>
         (function() {
             const theme = localStorage.getItem('devforges_theme') || 'onyx';
             document.documentElement.setAttribute('data-theme', theme);
@@ -105,7 +114,7 @@
         <section>
             <h2>3. Third-Party Analytics & Cookies</h2>
             <p>
-                DEVFORGES does not deploy tracking pixels, cookies, or tracking APIs. We utilize static assets to prevent client footprint tracking, ensuring absolute privacy.
+                We use Google Analytics to collect anonymous usage statistics to help us analyze traffic and improve the website. Google Analytics sets cookies to track visitor interactions. No sensitive developer input values (such as credentials, format payloads, or code snippets) are ever sent to any external server; all utility execution remains entirely local.
             </p>
         </section>
 
@@ -174,7 +183,7 @@
         </div>
         
         <div class="footer-bottom">
-            <span>&copy; 2026 Devforges Studio. All rights reserved. Zero cookies tracked.</span>
+            <span>&copy; 2026 Devforges Studio. All rights reserved. Privacy-focused developer tools.</span>
             <span>DEVFORGES — Developer Tools. Reimagined.</span>
         </div>
     </footer>
